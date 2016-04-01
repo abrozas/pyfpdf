@@ -354,14 +354,14 @@ class FPDF(object):
         if(self.page>0):
             self._out(self.draw_color)
 
-    def set_fill_color(self,r,g=-1,b=-1):
+    def set_fill_color(self, r, g=-1, b=-1):
         "Set color for all filling operations"
-        if((r==0 and g==0 and b==0) or g==-1):
-            self.fill_color=sprintf('%.3f G',r/255.0)
+        if (r == 0 and g == 0 and b == 0) or g == -1:
+            self.fill_color = '%.3f g' % (r/255.0)
         else:
-            self.fill_color=sprintf('%.3f %.3f %.3f RG',r/255.0,g/255.0,b/255.0)
-        self.color_flag=(self.fill_color!=self.text_color)
-        if(self.page>0):
+            self.fill_color = '%.3f %.3f %.3f rg' % (r/255.0, g/255.0, b/255.0)
+        self.color_flag = self.fill_color != self.text_color
+        if self.page > 0:
             self._out(self.fill_color)
 
     def set_text_color(self, r,g=-1,b=-1):
@@ -2056,4 +2056,40 @@ class FPDF(object):
                 x += dim[d]
             x += dim['n']
 
+    def rounded_rect(self, x, y, w, h, r, style=''):
 
+        k = self.k
+        hp = self.h
+        if style == 'F':
+            op = 'f'
+        elif style == 'FD' or style == 'DF':
+            op = 'B'
+        else:
+            op = 'S'
+
+        my_arc = 4/3 * (math.sqrt(2) - 1)
+        self._out('%.2f %.2f m' % ((x+r)*k, (hp-y)*k))
+        xc = x+w-r
+        yc = y+r
+        self._out('%.2f %.2f l' % (xc*k, (hp-y)*k))
+
+        self._arc(xc + r * my_arc, yc - r, xc + r, yc - r*my_arc, xc + r, yc)
+
+        xc = x+w-r
+        yc = y+h-r
+        self._out('%.2f %.2f l' % ((x+w)*k, (hp-yc)*k))
+        self._arc(xc + r, yc + r*my_arc, xc + r*my_arc, yc + r, xc, yc + r)
+        xc = x+r
+        yc = y+h-r
+        self._out('%.2f %.2f l' % (xc*k, (hp-(y+h))*k))
+        self._arc(xc - r*my_arc, yc + r, xc - r, yc + r*my_arc, xc - r, yc)
+        xc = x+r
+        yc = y+r
+        self._out('%.2f %.2f l' % (x*k, (hp-yc)*k))
+        self._arc(xc - r, yc - r*my_arc, xc - r*my_arc, yc - r, xc, yc - r)
+        self._out(op)
+
+    def _arc(self, x1, y1, x2, y2, x3, y3):
+        h = self.h
+        self._out('%.2f %.2f %.2f %.2f %.2f %.2f c ' % (x1*self.k, (h-y1)*self.k, x2*self.k, (h-y2)*self.k, x3*self.k,
+                                                        (h-y3)*self.k))
