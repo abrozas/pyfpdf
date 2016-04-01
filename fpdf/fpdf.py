@@ -357,9 +357,9 @@ class FPDF(object):
     def set_fill_color(self,r,g=-1,b=-1):
         "Set color for all filling operations"
         if((r==0 and g==0 and b==0) or g==-1):
-            self.fill_color=sprintf('%.3f g',r/255.0)
+            self.fill_color=sprintf('%.3f G',r/255.0)
         else:
-            self.fill_color=sprintf('%.3f %.3f %.3f rg',r/255.0,g/255.0,b/255.0)
+            self.fill_color=sprintf('%.3f %.3f %.3f RG',r/255.0,g/255.0,b/255.0)
         self.color_flag=(self.fill_color!=self.text_color)
         if(self.page>0):
             self._out(self.fill_color)
@@ -367,9 +367,9 @@ class FPDF(object):
     def set_text_color(self, r,g=-1,b=-1):
         "Set color for text"
         if((r==0 and g==0 and b==0) or g==-1):
-            self.text_color=sprintf('%.3f g',r/255.0)
+            self.text_color=sprintf('%.3f G',r/255.0)
         else:
-            self.text_color=sprintf('%.3f %.3f %.3f rg',r/255.0,g/255.0,b/255.0)
+            self.text_color=sprintf('%.3f %.3f %.3f RG',r/255.0,g/255.0,b/255.0)
         self.color_flag=(self.fill_color!=self.text_color)
 
     def get_string_width(self, s, normalized = False):
