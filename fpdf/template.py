@@ -21,7 +21,7 @@ class Template:
         if elements:
             self.load_elements(elements)
         self.handlers = {'T': self.text, 'L': self.line, 'I': self.image, 
-                         'B': self.rect, 'BC': self.barcode, 'W': self.write, }
+                         'B': self.rect, 'BC': self.barcode, 'W': self.write, 'RB': self.rounded_rect}
         self.texts = {}
         pdf = self.pdf = FPDF(format=format,orientation=orientation, unit="mm")
         pdf.set_title(title)
@@ -192,6 +192,14 @@ class Template:
         pdf.set_line_width(size)
         pdf.rect(x1, y1, x2-x1, y2-y1, 'DF')
 
+    def rounded_rect(self, pdf, x1=0, y1=0, x2=0, y2=0, size=0, round=3.5, foreground=0, background=65535,  *args, **kwargs):
+        if pdf.draw_color!=rgb(foreground):
+            pdf.set_draw_color(*rgb(foreground))
+        if pdf.fill_color!=rgb(background):
+            pdf.set_fill_color(*rgb(background))
+        pdf.set_line_width(size)
+        pdf.rounded_rect(x1, y1, x2-x1, y2-y1, round, 'DF')
+
     def image(self, pdf, x1=0, y1=0, x2=0, y2=0, text='', *args,**kwargs):
         if text:
             pdf.image(text, x1,y1,w=x2-x1,h=y2-y1,type='',link='')
@@ -221,7 +229,7 @@ class Template:
         if bold: style += "B"
         if italic: style += "I"
         if underline: style += "U"
-        align = {'L':'L','R':'R','I':'L','D':'R','C':'C','':''}.get(align) # D/I in spanish
+        align = {'L':'L','R':'R','I':'L','D':'R','C':'C','J':'J'}.get(align) # D/I in spanish
         pdf.set_font(font,style,size)
         ##m_k = 72 / 2.54
         ##h = (size/m_k)
