@@ -122,7 +122,7 @@ class Template:
             pdf.set_font('Arial','B',16)
             pdf.set_auto_page_break(False,margin=0)
 
-            for element in sorted(self.elements,key=lambda x: x['priority']):
+            for element in sorted(self.elements, key=lambda x: x['priority']):
                 #print "dib",element['type'], element['name'], element['x1'], element['y1'], element['x2'], element['y2']
                 element = element.copy()
                 element['text'] = self.texts[pg].get(element['name'].lower(), element['text'])
@@ -156,7 +156,7 @@ class Template:
             if bold: style += "B"
             if italic: style += "I"
             if underline: style += "U"
-            align = {'L':'L','R':'R','I':'L','D':'R','C':'C','':''}.get(align) # D/I in spanish
+            align = {'L':'L','R':'R','I':'L','D':'R','C':'C','J':'J'}.get(align) # D/I in spanish
             pdf.set_font(font,style,size)
             ##m_k = 72 / 2.54
             ##h = (size/m_k)
@@ -190,7 +190,7 @@ class Template:
         if pdf.fill_color!=rgb(background):
             pdf.set_fill_color(*rgb(background))
         pdf.set_line_width(size)
-        pdf.rect(x1, y1, x2-x1, y2-y1)
+        pdf.rect(x1, y1, x2-x1, y2-y1, 'DF')
 
     def image(self, pdf, x1=0, y1=0, x2=0, y2=0, text='', *args,**kwargs):
         if text:
